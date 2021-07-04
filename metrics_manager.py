@@ -64,7 +64,7 @@ class MetricsManager(object):
 
         # Get the log information.
         self._client = carla.Client(self._args.host, int(self._args.port))
-        recorder_file = "{}/{}".format(os.getenv('SCENARIO_RUNNER_ROOT', "./"), log)
+        recorder_file = "{}/{}".format(os.getenv('SCENARIO_RUNNER_ROOT_PROJECT', "./"), log)
 
         # Check that the file is correct
         if recorder_file[-4:] != '.log':
@@ -139,7 +139,7 @@ def main():
     parser.add_argument('--port', '-p', default=2000,
                         help='TCP port to listen to (default: 2000)')
     parser.add_argument('--log', required=True,
-                        help='Path to the CARLA recorder .log file (relative to SCENARIO_RUNNER_ROOT).\nThis file is created by the record functionality at ScenarioRunner')
+                        help='Path to the CARLA recorder .log file (relative to SCENARIO_RUNNER_ROOT_PROJECT).\nThis file is created by the record functionality at ScenarioRunner')
     parser.add_argument('--metric', required=True,
                         help='Path to the .py file defining the used metric.\nSome examples at srunner/metrics')
     parser.add_argument('--criteria', default="",

@@ -31,7 +31,7 @@ Similarly to the main ScenarioRunner module, the Metrics module is run using a m
 	*   `host` *(string)* – IP address where a CARLA simulation is running. Default is `(127.0.0.1)`.  
 	*   `port` *(int)* – TCP port where the CARLA simulation is running. Default are `2000` and `2001`.  
 	*   `metrics` — Path to the metrics to be used.  
-	*   `log` — Path to the `.log` file containing the recording (relative to the environment variable `SCENARIO_RUNNER_ROOT`).  
+	*   `log` — Path to the `.log` file containing the recording (relative to the environment variable `SCENARIO_RUNNER_ROOT_PROJECT`).  
 	*   `criteria` *(optional)* — Path to a JSON file with the criteria of the scenario.  
 
 The rest of the elements that shape the module can be found in the `srunner/metrics` folder. These folder has been divided in three subfolders.
@@ -55,7 +55,7 @@ The rest of the elements that shape the module can be found in the `srunner/metr
 
 The metrics module needs for a recording of a simulation in order to work. Otherwise, it has no data to make the calculations of the metrics.  
 
-Use the `record` argument. Add the path where the information should be saved should be saved. The path must be relative to the environment variable `SCENARIO_RUNNER_ROOT`.  
+Use the `record` argument. Add the path where the information should be saved should be saved. The path must be relative to the environment variable `SCENARIO_RUNNER_ROOT_PROJECT`.  
 
 ```sh
 python scenario_runner.py --scenario <scenario_name> --record <path/to/save/the/recorder/file>

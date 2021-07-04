@@ -34,7 +34,7 @@ class ScenarioConfigurationParser(object):
         scenario that matches the scenario_name is parsed and returned.
         """
 
-        list_of_config_files = glob.glob("{}/srunner/examples/*.xml".format(os.getenv('SCENARIO_RUNNER_ROOT', "./")))
+        list_of_config_files = glob.glob("{}/srunner/examples/*.xml".format(os.getenv('SCENARIO_RUNNER_ROOT_PROJECT', "./")))
 
         if config_file_name != '':
             list_of_config_files.append(config_file_name)
@@ -105,8 +105,8 @@ class ScenarioConfigurationParser(object):
         Parse *all* config files and provide a list with all scenarios @return
         """
 
-        list_of_config_files = glob.glob("{}/srunner/examples/*.xml".format(os.getenv('SCENARIO_RUNNER_ROOT', "./")))
-        list_of_config_files += glob.glob("{}/srunner/examples/*.xosc".format(os.getenv('SCENARIO_RUNNER_ROOT', "./")))
+        list_of_config_files = glob.glob("{}/srunner/examples/*.xml".format(os.getenv('SCENARIO_RUNNER_ROOT_PROJECT', "./")))
+        list_of_config_files += glob.glob("{}/srunner/examples/*.xosc".format(os.getenv('SCENARIO_RUNNER_ROOT_PROJECT', "./")))
 
         if config_file_name != '':
             list_of_config_files.append(config_file_name)

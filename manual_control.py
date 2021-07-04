@@ -52,17 +52,18 @@ from __future__ import print_function
 # -- imports -------------------------------------------------------------------
 # ==============================================================================
 
-
 import carla
 
 from examples.manual_control import (World, HUD, KeyboardControl, CameraManager,
                                      CollisionSensor, LaneInvasionSensor, GnssSensor, IMUSensor)
+from examples.client_bounding_boxes import ClientSideBoundingBoxes
 
 import os
 import argparse
 import logging
 import time
 import pygame
+import numpy as np
 
 # ==============================================================================
 # -- Global functions ----------------------------------------------------------
@@ -81,6 +82,9 @@ def get_actor_display_name(actor, truncate=250):
 class WorldSR(World):
 
     restarted = False
+    def __init__(self, carla_world, hud, args):
+        self.args = args
+        super(WorldSR, self).__init__(carla_world, hud, args)
 
     def restart(self):
 
@@ -116,6 +120,13 @@ class WorldSR(World):
         self.camera_manager = CameraManager(self.player, self.hud, self._gamma)
         self.camera_manager.transform_index = cam_pos_index
         self.camera_manager.set_sensor(cam_index, notify=False)
+
+        calibration = np.identity(3)
+        calibration[0, 2] = self.args.width / 2.0
+        calibration[1, 2] = self.args.height / 2.0
+        calibration[0, 0] = calibration[1, 1] = self.args.width / (2.0 * np.tan(90 * np.pi / 360.0))
+        self.camera_manager.sensor.calibration = calibration
+
         actor_type = get_actor_display_name(self.player)
         self.hud.notification(actor_type)
 
@@ -125,6 +136,14 @@ class WorldSR(World):
 
         self.hud.tick(self, clock)
         return True
+
+    def render(self, display):
+        self.camera_manager.render(display)
+        self.hud.render(display)
+        vehicles = self.world.get_actors().filter('vehicle.*')
+        bounding_boxes = ClientSideBoundingBoxes.get_bounding_boxes(vehicles, self.camera_manager.sensor)
+        ClientSideBoundingBoxes.draw_bounding_boxes(display, bounding_boxes)
+
 
 # ==============================================================================
 # -- game_loop() ---------------------------------------------------------------

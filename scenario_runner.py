@@ -41,7 +41,7 @@ from srunner.tools.scenario_parser import ScenarioConfigurationParser
 from srunner.tools.route_parser import RouteParser
 
 # Version of scenario_runner
-VERSION = '0.9.10'
+VERSION = '0.9.11'
 
 
 class ScenarioRunner(object):
@@ -144,7 +144,7 @@ class ScenarioRunner(object):
         """
 
         # Path of all scenario at "srunner/scenarios" folder + the path of the additional scenario argument
-        scenarios_list = glob.glob("{}/srunner/scenarios/*.py".format(os.getenv('SCENARIO_RUNNER_ROOT', "./")))
+        scenarios_list = glob.glob("{}/srunner/scenarios/*.py".format(os.getenv('SCENARIO_RUNNER_ROOT_PROJECT', "./")))
         scenarios_list.append(self._args.additionalScenario)
 
         for scenario_file in scenarios_list:
@@ -397,7 +397,7 @@ class ScenarioRunner(object):
         try:
             if self._args.record:
                 recorder_name = "{}/{}/{}.log".format(
-                    os.getenv('SCENARIO_RUNNER_ROOT', "./"), self._args.record, config.name)
+                    os.getenv('SCENARIO_RUNNER_ROOT_PROJECT', "./"), self._args.record, config.name)
                 self.client.start_recorder(recorder_name, True)
 
             # Load scenario and run it
@@ -549,7 +549,7 @@ def main():
     parser.add_argument('--reloadWorld', action="store_true",
                         help='Reload the CARLA world before starting a scenario (default=True)')
     parser.add_argument('--record', type=str, default='',
-                        help='Path were the files will be saved, relative to SCENARIO_RUNNER_ROOT.\nActivates the CARLA recording feature and saves to file all the criteria information.')
+                        help='Path were the files will be saved, relative to SCENARIO_RUNNER_ROOT_PROJECT.\nActivates the CARLA recording feature and saves to file all the criteria information.')
     parser.add_argument('--randomize', action="store_true", help='Scenario parameters are randomized')
     parser.add_argument('--repetitions', default=1, type=int, help='Number of scenario executions')
     parser.add_argument('--waitForEgo', action="store_true", help='Connect the scenario to an existing ego vehicle')

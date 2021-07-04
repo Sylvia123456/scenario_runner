@@ -152,7 +152,7 @@ __4. Add environment variables and Python paths__ These are necessary for the sy
 # <VERSION> is the correct string for the Python version being used
 # In a build from source, the .egg files may be in: ${CARLA_ROOT}/PythonAPI/dist/ instead of ${CARLA_ROOT}/PythonAPI
 export CARLA_ROOT=/path/to/your/carla/installation
-export SCENARIO_RUNNER_ROOT=/path/to/your/scenario/runner/installation
+export SCENARIO_RUNNER_ROOT_PROJECT=/path/to/your/scenario/runner/installation
 export PYTHONPATH=$PYTHONPATH:${CARLA_ROOT}/PythonAPI/carla/dist/carla-<VERSION>.egg
 export PYTHONPATH=$PYTHONPATH:${CARLA_ROOT}/PythonAPI/carla/agents
 export PYTHONPATH=$PYTHONPATH:${CARLA_ROOT}/PythonAPI/carla
@@ -171,7 +171,7 @@ export PYTHONPATH=$PYTHONPATH:${CARLA_ROOT}/PythonAPI
 # <VERSION> is the correct string for the Python version being used
 # In a build from source, the .egg files may be in: ${CARLA_ROOT}/PythonAPI/dist/ instead of ${CARLA_ROOT}/PythonAPI
 set CARLA_ROOT=\path\to\your\carla\installation
-set SCENARIO_RUNNER_ROOT=\path\to\your\scenario\runner\installation
+set SCENARIO_RUNNER_ROOT_PROJECT=\path\to\your\scenario\runner\installation
 set PYTHONPATH=%PYTHONPATH%;%CARLA_ROOT%\PythonAPI\carla\dist\carla-<VERSION>.egg
 set PYTHONPATH=%PYTHONPATH%;%CARLA_ROOT%\PythonAPI\carla\agents
 set PYTHONPATH=%PYTHONPATH%;%CARLA_ROOT%\PythonAPI\carla
