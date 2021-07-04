@@ -65,6 +65,7 @@ import time
 import pygame
 import numpy as np
 
+
 # ==============================================================================
 # -- Global functions ----------------------------------------------------------
 # ==============================================================================
@@ -80,9 +81,10 @@ def get_actor_display_name(actor, truncate=250):
 # ==============================================================================
 
 class WorldSR(World):
-
     restarted = False
+    # 单位 m/s
     ego_speed = 15
+
     def __init__(self, carla_world, hud, args):
         self.args = args
         super(WorldSR, self).__init__(carla_world, hud, args)
@@ -110,7 +112,7 @@ class WorldSR(World):
                     print("Ego vehicle found")
                     self.player = vehicle
                     break
-        
+
         self.player_name = self.player.type_id
         self.init_ego_velocity()
 
@@ -147,10 +149,13 @@ class WorldSR(World):
         ClientSideBoundingBoxes.draw_bounding_boxes(display, bounding_boxes)
 
     def init_ego_velocity(self):
-        # forward_vec = self.player.get_transform().get_forward_vector()
-        # velocity_vec = self.ego_speed * forward_vec
-        # self.player.set_target_velocity(velocity_vec)
-        self.player.enable_constant_velocity(carla.Vector3D(16, 0, 0))
+        forward_vec = self.player.get_transform().get_forward_vector()
+        velocity_vec = self.ego_speed * forward_vec
+        self.player.set_target_velocity(velocity_vec)
+        print("ego_velocity = {}".format(velocity_vec))
+        # self.player.enable_constant_velocity(carla.Vector3D(16, 0, 0))
+
+
 # ==============================================================================
 # -- game_loop() ---------------------------------------------------------------
 # ==============================================================================
@@ -228,9 +233,9 @@ def main():
         help='window resolution (default: 1280x720)')
     args = argparser.parse_args()
 
-    args.rolename = 'hero'      # Needed for CARLA version
-    args.filter = "vehicle.*"   # Needed for CARLA version
-    args.gamma = 2.2   # Needed for CARLA version
+    args.rolename = 'hero'  # Needed for CARLA version
+    args.filter = "vehicle.*"  # Needed for CARLA version
+    args.gamma = 2.2  # Needed for CARLA version
     args.width, args.height = [int(x) for x in args.res.split('x')]
 
     log_level = logging.DEBUG if args.debug else logging.INFO
@@ -251,5 +256,4 @@ def main():
 
 
 if __name__ == '__main__':
-
     main()
