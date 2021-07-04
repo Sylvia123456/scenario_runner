@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bca9d0c7-41fd-4040-8714-5f57fc634214" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/srunner/visualizer/client_bounding_boxes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/manual_control.py" beforeDir="false" afterPath="$PROJECT_DIR$/manual_control.py" afterDir="false" />
     </list>
@@ -21,11 +22,12 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/srunner/visualizer" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\zjw\Carla\peoject\scenario_runner\srunner\visualizer" />
       <recent name="C:\1001-D\V2X\Carla\scenario_runner-0.9.11\scenario_runner-0.9.11\srunner\examples" />
       <recent name="C:\1001-D\V2X\Carla\scenario_runner-0.9.11\scenario_runner-0.9.11\srunner\scenarios" />
     </key>

@@ -56,8 +56,7 @@ import carla
 
 from examples.manual_control import (World, HUD, KeyboardControl, CameraManager,
                                      CollisionSensor, LaneInvasionSensor, GnssSensor, IMUSensor)
-from examples.client_bounding_boxes import ClientSideBoundingBoxes
-
+from client_bounding_boxes import ClientSideBoundingBoxes
 import os
 import argparse
 import logging
