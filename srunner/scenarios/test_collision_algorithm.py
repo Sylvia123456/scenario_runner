@@ -26,7 +26,6 @@ from srunner.scenarios.basic_scenario import BasicScenario
 
 
 class TestCollisionAlgorithm(BasicScenario):
-
     """
     Implementation class for
     'Non-signalized junctions: crossing negotiation' scenario,
@@ -54,11 +53,11 @@ class TestCollisionAlgorithm(BasicScenario):
         self.timeout = timeout
 
         super(TestCollisionAlgorithm, self).__init__("TestCollisionAlgorithm",
-                                                       ego_vehicles,
-                                                       config,
-                                                       world,
-                                                       debug_mode,
-                                                       criteria_enable=criteria_enable)
+                                                     ego_vehicles,
+                                                     config,
+                                                     world,
+                                                     debug_mode,
+                                                     criteria_enable=criteria_enable)
 
     def _initialize_actors(self, config):
         """

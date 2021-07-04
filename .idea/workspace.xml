@@ -2,22 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bca9d0c7-41fd-4040-8714-5f57fc634214" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/scenario_runner-0.9.11.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/srunner/examples/TestCollisionAlgorithm.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/srunner/scenarios/test_collision_algorithm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Docs/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/Docs/CHANGELOG.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Docs/getting_scenariorunner.md" beforeDir="false" afterPath="$PROJECT_DIR$/Docs/getting_scenariorunner.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Docs/metrics_module.md" beforeDir="false" afterPath="$PROJECT_DIR$/Docs/metrics_module.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/manual_control.py" beforeDir="false" afterPath="$PROJECT_DIR$/manual_control.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/metrics_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/metrics_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scenario_runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/scenario_runner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/srunner/tools/scenario_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/srunner/tools/scenario_parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/srunner/scenarios/test_collision_algorithm.py" beforeDir="false" afterPath="$PROJECT_DIR$/srunner/scenarios/test_collision_algorithm.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,13 +39,13 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\VZ8QK9U\.conda\envs\pythonProject3.7\python.exe" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scenario_runner.py" />
-      <option name="PARAMETERS" value="--scenario TestCollisionAlgorithm_1 --reloadWorld" />
+      <option name="PARAMETERS" value="--scenario TestCollisionAlgorithm_1 --reloadWorld --debug" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -94,14 +81,9 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/srunner/tools/scenario_parser.py</url>
-          <line>36</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/srunner/tools/scenario_parser.py</url>
-          <line>38</line>
-          <option name="timeStamp" value="2" />
+          <url>file://$PROJECT_DIR$/srunner/scenariomanager/scenarioatomics/atomic_behaviors.py</url>
+          <line>1400</line>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -82,6 +82,7 @@ def get_actor_display_name(actor, truncate=250):
 class WorldSR(World):
 
     restarted = False
+    ego_speed = 15
     def __init__(self, carla_world, hud, args):
         self.args = args
         super(WorldSR, self).__init__(carla_world, hud, args)
@@ -111,6 +112,7 @@ class WorldSR(World):
                     break
         
         self.player_name = self.player.type_id
+        self.init_ego_velocity()
 
         # Set up the sensors.
         self.collision_sensor = CollisionSensor(self.player, self.hud)
@@ -144,7 +146,11 @@ class WorldSR(World):
         bounding_boxes = ClientSideBoundingBoxes.get_bounding_boxes(vehicles, self.camera_manager.sensor)
         ClientSideBoundingBoxes.draw_bounding_boxes(display, bounding_boxes)
 
-
+    def init_ego_velocity(self):
+        # forward_vec = self.player.get_transform().get_forward_vector()
+        # velocity_vec = self.ego_speed * forward_vec
+        # self.player.set_target_velocity(velocity_vec)
+        self.player.enable_constant_velocity(carla.Vector3D(16, 0, 0))
 # ==============================================================================
 # -- game_loop() ---------------------------------------------------------------
 # ==============================================================================
