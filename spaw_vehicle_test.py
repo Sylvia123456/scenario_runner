@@ -62,13 +62,9 @@ import os
 import argparse
 import logging
 import time
+import pygame
 import numpy as np
-
-try:
-    import pygame
-    from pygame.locals import K_y
-except ImportError:
-    raise RuntimeError('cannot import pygame, make sure pygame package is installed')
+import random
 
 
 # ==============================================================================
@@ -101,6 +97,14 @@ class WorldSR(World):
             return
         self.restarted = True
 
+        if not self.args.scenario and not self.args.testcase1 and not self.args.testcase2:
+            return
+
+        if self.args.testcase1:
+            self.build_test_case1()
+        elif self.args.testcase2:
+            self.build_test_case2()
+
         self.player_max_speed = 1.589
         self.player_max_speed_fast = 3.713
 
@@ -124,7 +128,6 @@ class WorldSR(World):
         self.player_name = self.player.type_id
         if not self.args.waitstart:
             self.init_ego_velocity()
-
         # Set up the sensors.
         self.collision_sensor = CollisionSensor(self.player, self.hud)
         self.lane_invasion_sensor = LaneInvasionSensor(self.player, self.hud)
@@ -143,10 +146,20 @@ class WorldSR(World):
         actor_type = get_actor_display_name(self.player)
         self.hud.notification(actor_type)
 
+    def build_test_case1(self):
+        self.spawn_ego_car()
+
+    def build_test_case2(self):
+        pass
+
+    def spawn_ego_car(self):
+        spawn_point = carla.Transform(carla.Location(x=-74.32, y=-50, z=0.5), carla.Rotation(yaw=90))
+        blueprint = self.world.get_blueprint_library().filter('vehicle.tesla.model3')
+        self.player = self.world.try_spawn_actor(blueprint, spawn_point)
+
     def tick(self, clock):
         if len(self.world.get_actors().filter(self.player_name)) < 1:
             return False
-        # id is unique
         self._collision_algor.detect(self.player, self._surroundingcars[0], self.hud, self.map)
         self.hud.tick(self, clock)
         return True
@@ -164,19 +177,6 @@ class WorldSR(World):
         self.player.set_target_velocity(velocity_vec)
         print("ego_velocity = {}".format(velocity_vec))
         # self.player.enable_constant_velocity(carla.Vector3D(16, 0, 0))
-
-
-class KeyboardControlSR(KeyboardControl):
-
-    def __init__(self, world, start_in_autopilot):
-        super(KeyboardControlSR, self).__init__(world, start_in_autopilot)
-
-    def parse_events(self, client, world, clock):
-        for event in pygame.event.get():
-            if event.type == pygame.KEYUP:
-                if event.key == K_y:
-                    world.init_ego_velocity()
-        super(KeyboardControlSR, self).parse_events(client, world, clock)
 
 
 # ==============================================================================
@@ -198,7 +198,7 @@ def game_loop(args):
 
         hud = HUD(args.width, args.height)
         world = WorldSR(client.get_world(), hud, args)
-        controller = KeyboardControlSR(world, args.autopilot)
+        controller = KeyboardControl(world, args.autopilot)
 
         clock = pygame.time.Clock()
         while True:
@@ -254,6 +254,24 @@ def main():
         metavar='WIDTHxHEIGHT',
         default='1280x720',
         help='window resolution (default: 1280x720)')
+    argparser.add_argument(
+        '--scenario',
+        default=False,
+        type=bool,
+        help='should load scenario first, and will run the scenario'
+    )
+    argparser.add_argument(
+        '--testcase1',
+        default=False,
+        type=bool,
+        help='run simple test case 1'
+    )
+    argparser.add_argument(
+        '--testcase2',
+        default=False,
+        type=bool,
+        help='run simple test case 2'
+    )
     argparser.add_argument(
         '--waitstart',
         default=False,

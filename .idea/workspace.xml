@@ -2,17 +2,36 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bca9d0c7-41fd-4040-8714-5f57fc634214" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/srunner/visualizer/client_bounding_boxes.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/srunner/datamanager/collision_detect.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/srunner/scenarios/test_collision_algorithm_2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/srunner/scenarios/test_collision_algorithm_3.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/srunner/utilities/calculation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/manual_control.py" beforeDir="false" afterPath="$PROJECT_DIR$/manual_control.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/srunner/examples/TestCollisionAlgorithm.xml" beforeDir="false" afterPath="$PROJECT_DIR$/srunner/examples/TestCollisionAlgorithm.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="ProjectId" id="1ukb4sbXelkv8Q6PZVSl9hNmuHV" />
   <component name="ProjectViewState">
@@ -22,17 +41,60 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/srunner/visualizer" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/srunner/scenarios" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\zjw\Carla\peoject\scenario_runner\srunner\scenarios" />
       <recent name="D:\zjw\Carla\peoject\scenario_runner\srunner\visualizer" />
       <recent name="C:\1001-D\V2X\Carla\scenario_runner-0.9.11\scenario_runner-0.9.11\srunner\examples" />
       <recent name="C:\1001-D\V2X\Carla\scenario_runner-0.9.11\scenario_runner-0.9.11\srunner\scenarios" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.manual_control">
+    <configuration name="ICW_VER1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="scenario_runner-0.9.11" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/srunner/datamanager/ICW_VER1" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/srunner/datamanager/ICW_VER1/ICW_VER1.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="manual_control" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="scenario_runner-0.9.11" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\ProgramData\Anaconda3\envs\pythonProject3.7\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/manual_control.py" />
+      <option name="PARAMETERS" value="--waitstart true" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="scenario_runner" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="scenario_runner-0.9.11" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -54,6 +116,38 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="spaw_vehicle_test" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="scenario_runner-0.9.11" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\ProgramData\Anaconda3\envs\pythonProject3.7\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/spaw_vehicle_test.py" />
+      <option name="PARAMETERS" value="--testcase1 true" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.manual_control" />
+      <item itemvalue="Python.spaw_vehicle_test" />
+      <item itemvalue="Python.scenario_runner" />
+      <item itemvalue="Python.ICW_VER1" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.ICW_VER1" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -77,16 +171,5 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/srunner/scenariomanager/scenarioatomics/atomic_behaviors.py</url>
-          <line>1400</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
