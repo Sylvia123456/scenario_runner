@@ -88,7 +88,7 @@ def get_actor_display_name(actor, truncate=250):
 class WorldSR(World):
     restarted = False
     # 单位 m/s
-    ego_speed = 15
+    ego_speed = 4
 
     def __init__(self, carla_world, hud, args):
         self.args = args
@@ -148,6 +148,7 @@ class WorldSR(World):
             return False
         # id is unique
         self._collision_algor.detect(self.player, self._surroundingcars[0], self.hud, self.map)
+        print("car_1  acc = {}".format(self._surroundingcars[1].get_acceleration()))
         self.hud.tick(self, clock)
         return True
 

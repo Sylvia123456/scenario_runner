@@ -40,7 +40,6 @@ from srunner.scenariomanager.timer import GameTime
 from srunner.tools.scenario_helper import detect_lane_obstacle
 from srunner.tools.scenario_helper import generate_target_waypoint_list_multilane
 
-
 import srunner.tools
 
 EPSILON = 0.001
@@ -88,7 +87,6 @@ def get_actor_control(actor):
 
 
 class AtomicBehavior(py_trees.behaviour.Behaviour):
-
     """
     Base class for all atomic behaviors used to setup a scenario
 
@@ -138,7 +136,6 @@ class AtomicBehavior(py_trees.behaviour.Behaviour):
 
 
 class RunScript(AtomicBehavior):
-
     """
     This is an atomic behavior to start execution of an additional script.
 
@@ -189,7 +186,6 @@ class RunScript(AtomicBehavior):
 
 
 class ChangeWeather(AtomicBehavior):
-
     """
     Atomic to write a new weather configuration into the blackboard.
     Used in combination with WeatherBehavior() to have a continuous weather simulation.
@@ -224,7 +220,6 @@ class ChangeWeather(AtomicBehavior):
 
 
 class ChangeRoadFriction(AtomicBehavior):
-
     """
     Atomic to update the road friction in CARLA.
 
@@ -273,7 +268,6 @@ class ChangeRoadFriction(AtomicBehavior):
 
 
 class ChangeActorControl(AtomicBehavior):
-
     """
     Atomic to change the longitudinal/lateral control logic for an actor.
     The (actor, controller) pair is stored inside the Blackboard.
@@ -330,7 +324,6 @@ class ChangeActorControl(AtomicBehavior):
 
 
 class UpdateAllActorControls(AtomicBehavior):
-
     """
     Atomic to update (run one control loop step) all actor controls.
 
@@ -370,7 +363,6 @@ class UpdateAllActorControls(AtomicBehavior):
 
 
 class ChangeActorTargetSpeed(AtomicBehavior):
-
     """
     Atomic to change the target speed for an actor controller.
 
@@ -532,7 +524,6 @@ class ChangeActorTargetSpeed(AtomicBehavior):
 
 
 class SyncArrivalOSC(AtomicBehavior):
-
     """
     Atomic to make two actors arrive at their corresponding places at the same time
 
@@ -690,7 +681,6 @@ class SyncArrivalOSC(AtomicBehavior):
 
 
 class ChangeActorWaypoints(AtomicBehavior):
-
     """
     Atomic to change the waypoints for an actor controller.
 
@@ -836,7 +826,6 @@ class ChangeActorWaypoints(AtomicBehavior):
 
 
 class ChangeActorLateralMotion(AtomicBehavior):
-
     """
     Atomic to change the waypoints for an actor controller.
 
@@ -981,7 +970,6 @@ class ChangeActorLateralMotion(AtomicBehavior):
 
 
 class ChangeActorLaneOffset(AtomicBehavior):
-
     """
     OpenSCENARIO atomic.
     Atomic to change the offset of the controller.
@@ -1153,7 +1141,6 @@ class ChangeActorLaneOffset(AtomicBehavior):
 
 
 class ActorTransformSetterToOSCPosition(AtomicBehavior):
-
     """
     OpenSCENARIO atomic
     This class contains an atomic behavior to set the transform of an OpenSCENARIO actor.
@@ -1212,7 +1199,6 @@ class ActorTransformSetterToOSCPosition(AtomicBehavior):
 
 
 class AccelerateToVelocity(AtomicBehavior):
-
     """
     This class contains an atomic acceleration behavior. The controlled
     traffic participant will accelerate with _throttle_value_ until reaching
@@ -1265,7 +1251,6 @@ class AccelerateToVelocity(AtomicBehavior):
 
 
 class AccelerateToCatchUp(AtomicBehavior):
-
     """
     This class contains an atomic acceleration behavior.
     The car will accelerate until it is faster than another car, in order to catch up distance.
@@ -1344,7 +1329,6 @@ class AccelerateToCatchUp(AtomicBehavior):
 
 
 class KeepVelocity(AtomicBehavior):
-
     """
     This class contains an atomic behavior to keep the provided velocity.
     The controlled traffic participant will accelerate as fast as possible
@@ -1436,8 +1420,183 @@ class KeepVelocity(AtomicBehavior):
         super(KeepVelocity, self).terminate(new_status)
 
 
-class ChangeAutoPilot(AtomicBehavior):
+class KeepAccelerationWithInitVelocity(AtomicBehavior):
 
+    def __init__(self, actor, velocity, acceleration, duration=float("inf"), distance=float("inf"),
+                 name="KeepAccelerationWithInitVelocity"):
+        """
+        Setup parameters including acceleration value
+        and target velocity
+        """
+        super(KeepAccelerationWithInitVelocity, self).__init__(name, actor)
+        self.logger.debug("%s.__init__()" % (self.__class__.__name__))
+        self._acceleration = acceleration
+        self._init_velocity = velocity
+        self._control, self._type = get_actor_control(actor)
+        self._map = self._actor.get_world().get_map()
+        self._waypoint = self._map.get_waypoint(self._actor.get_location())
+
+        self._duration = duration
+        self._target_distance = distance
+        self._distance = 0
+        self._start_time = 0
+        self._location = None
+
+    def initialise(self):
+        self._location = CarlaDataProvider.get_location(self._actor)
+        self._start_time = GameTime.get_time()
+
+        # In case of walkers, we have to extract the current heading
+        if self._type == 'walker':
+            self._control.speed = self._init_velocity
+            self._control.direction = CarlaDataProvider.get_transform(self._actor).get_forward_vector()
+
+        super(KeepAccelerationWithInitVelocity, self).initialise()
+
+    def update(self):
+        """
+        As long as the stop condition (duration or distance) is not violated, set a new vehicle control
+
+        For vehicles: set throttle to throttle_value, as long as velocity is < target_velocity
+        For walkers: simply apply the given self._control
+        """
+        new_status = py_trees.common.Status.RUNNING
+
+        if self._type == 'vehicle':
+            current_velocity = self._init_velocity + self._acceleration * (GameTime.get_time() - self._start_time)
+            if CarlaDataProvider.get_velocity(self._actor) < current_velocity:
+                self._control.throttle = 1.0
+            else:
+                self._control.throttle = 0.0
+        self._actor.apply_control(self._control)
+
+        new_location = CarlaDataProvider.get_location(self._actor)
+        self._distance += calculate_distance(self._location, new_location)
+        self._location = new_location
+
+        # if self._distance > self._target_distance:
+        #    new_status = py_trees.common.Status.SUCCESS
+
+        # if GameTime.get_time() - self._start_time > self._duration:
+        #    new_status = py_trees.common.Status.SUCCESS
+
+        self.logger.debug("%s.update()[%s->%s]" % (self.__class__.__name__, self.status, new_status))
+
+        return new_status
+
+    def terminate(self, new_status):
+        """
+        On termination of this behavior, the throttle should be set back to 0.,
+        to avoid further acceleration.
+        """
+
+        if self._type == 'vehicle':
+            self._control.throttle = 0.0
+        elif self._type == 'walker':
+            self._control.speed = 0.0
+        if self._actor is not None and self._actor.is_alive:
+            self._actor.apply_control(self._control)
+        super(KeepAccelerationWithInitVelocity, self).terminate(new_status)
+
+
+class DecelerateVelocity(AtomicBehavior):
+
+    def __init__(self, actor, acc, start_velocity, duration=float("inf"), distance=float("inf"),
+                 name="DecelerateVelocity"):
+        """
+        Setup parameters including acceleration value
+        and target velocity
+        """
+        super(DecelerateVelocity, self).__init__(name, actor)
+        self.logger.debug("%s.__init__()" % (self.__class__.__name__))
+        self._control, self._type = get_actor_control(actor)
+        self._map = self._actor.get_world().get_map()
+        self._waypoint = self._map.get_waypoint(self._actor.get_location())
+        self._acc = acc
+        self._start_velocity = start_velocity
+        self._shouldDecelerate = False
+
+        self._duration = duration
+        self._target_distance = distance
+        self._distance = 0
+        self._start_time = 0
+        self._location = None
+
+    def initialise(self):
+        self._location = CarlaDataProvider.get_location(self._actor)
+        self._start_time = GameTime.get_time()
+
+        # In case of walkers, we have to extract the current heading
+        if self._type == 'walker':
+            self._control.direction = CarlaDataProvider.get_transform(self._actor).get_forward_vector()
+
+        super(DecelerateVelocity, self).initialise()
+
+    def update(self):
+        """
+        As long as the stop condition (duration or distance) is not violated, set a new vehicle control
+
+        For vehicles: set throttle to throttle_value, as long as velocity is < target_velocity
+        For walkers: simply apply the given self._control
+        """
+        new_status = py_trees.common.Status.RUNNING
+
+        if self._type == 'vehicle':
+            if self._shouldDecelerate:
+                current_velocity = self._start_velocity + self._acc * (GameTime.get_time() - self._start_time)
+                print("_shouldDecelerate == true, current_velocity = {}".format(current_velocity))
+                if current_velocity <= 0:
+                    new_status = py_trees.common.Status.SUCCESS
+                else:
+                    if CarlaDataProvider.get_velocity(self._actor) > current_velocity:
+                        print("velocity = {}, brake = 1".format(CarlaDataProvider.get_velocity(self._actor)))
+                        self._control.brake = 1
+                        self._control.throttle = 0
+                    else:
+                        print("velocity = {}, throttle = 1".format(CarlaDataProvider.get_velocity(self._actor)))
+                        self._control.throttle = 1
+                        self._control.brake = 0
+            else:
+                if CarlaDataProvider.get_velocity(self._actor) < self._start_velocity:
+                    print("_shouldDecelerate == false, velocity = {}, start_velocity = {}".format(
+                        CarlaDataProvider.get_velocity(self._actor), self._start_velocity))
+                    self._control.throttle = 1
+                else:
+                    self._control.throttle = 0
+                    self._shouldDecelerate = True
+                    self._start_time = GameTime.get_time()
+                    print("set _shouldDecelerate = true, start_velocity = {}".format(GameTime.get_time()))
+        self._actor.apply_control(self._control)
+        # new_location = CarlaDataProvider.get_location(self._actor)
+        # self._distance += calculate_distance(self._location, new_location)
+        # self._location = new_location
+
+        # if self._distance > self._target_distance:
+        #    new_status = py_trees.common.Status.SUCCESS
+
+        # if GameTime.get_time() - self._start_time > self._duration:
+        #    new_status = py_trees.common.Status.SUCCESS
+
+        self.logger.debug("%s.update()[%s->%s]" % (self.__class__.__name__, self.status, new_status))
+
+        return new_status
+
+    def terminate(self, new_status):
+        """
+        On termination of this behavior, the throttle should be set back to 0.,
+        to avoid further acceleration.
+        """
+
+        if self._type == 'vehicle':
+            self._control.throttle = 0.0
+        elif self._type == 'walker':
+            self._control.speed = 0.0
+        if self._actor is not None and self._actor.is_alive:
+            self._actor.apply_control(self._control)
+        super(DecelerateVelocity, self).terminate(new_status)
+
+
+class ChangeAutoPilot(AtomicBehavior):
     """
     This class contains an atomic behavior to disable/enable the use of the autopilot.
 
@@ -1502,7 +1661,6 @@ class ChangeAutoPilot(AtomicBehavior):
 
 
 class StopVehicle(AtomicBehavior):
-
     """
     This class contains an atomic stopping behavior. The controlled traffic
     participant will decelerate with _bake_value_ until reaching a full stop.
@@ -1548,7 +1706,6 @@ class StopVehicle(AtomicBehavior):
 
 
 class SyncArrival(AtomicBehavior):
-
     """
     This class contains an atomic behavior to
     set velocity of actor so that it reaches location at the same time as
@@ -1626,7 +1783,6 @@ class SyncArrival(AtomicBehavior):
 
 
 class AddNoiseToVehicle(AtomicBehavior):
-
     """
     This class contains an atomic jitter behavior.
     To add noise to steer as well as throttle of the vehicle.
@@ -1665,7 +1821,6 @@ class AddNoiseToVehicle(AtomicBehavior):
 
 
 class ChangeNoiseParameters(AtomicBehavior):
-
     """
     This class contains an atomic jitter behavior.
     To add noise to steer as well as throttle of the vehicle.
@@ -1705,7 +1860,6 @@ class ChangeNoiseParameters(AtomicBehavior):
 
 
 class BasicAgentBehavior(AtomicBehavior):
-
     """
     This class contains an atomic behavior, which uses the
     basic_agent from CARLA to control the actor until
@@ -1754,7 +1908,6 @@ class BasicAgentBehavior(AtomicBehavior):
 
 
 class Idle(AtomicBehavior):
-
     """
     This class contains an idle behavior scenario
 
@@ -1794,7 +1947,6 @@ class Idle(AtomicBehavior):
 
 
 class WaypointFollower(AtomicBehavior):
-
     """
     This is an atomic behavior to follow waypoints while maintaining a given speed.
     If no plan is provided, the actor will follow its foward waypoints indefinetely.
@@ -1974,7 +2126,7 @@ class WaypointFollower(AtomicBehavior):
                     if self._actor_dict[actor]:
                         location = self._actor_dict[actor][0]
                         direction = location - actor_location
-                        direction_norm = math.sqrt(direction.x**2 + direction.y**2)
+                        direction_norm = math.sqrt(direction.x ** 2 + direction.y ** 2)
                         control = actor.get_control()
                         control.speed = self._target_speed
                         control.direction = direction / direction_norm
@@ -2014,7 +2166,6 @@ class WaypointFollower(AtomicBehavior):
 
 
 class LaneChange(WaypointFollower):
-
     """
     This class inherits from the class WaypointFollower.
 
@@ -2093,14 +2244,12 @@ class LaneChange(WaypointFollower):
 
 
 class SetInitSpeed(AtomicBehavior):
-
     """
     This class contains an atomic behavior to set the init_speed of an actor,
     succeding immeditely after initializing
     """
 
     def __init__(self, actor, init_speed=10, name='SetInitSpeed'):
-
         self._init_speed = init_speed
         self._terminate = None
         self._actor = actor
@@ -2127,8 +2276,47 @@ class SetInitSpeed(AtomicBehavior):
         return py_trees.common.Status.SUCCESS
 
 
-class HandBrakeVehicle(AtomicBehavior):
+class SetSpeedWithAcc(AtomicBehavior):
+    """
+    This class contains an atomic behavior to set the init_speed of an actor,
+    succeding immeditely after initializing
+    """
 
+    def __init__(self, actor, acc, init_speed=10, name='SetSpeedWithAcc'):
+        self._start_time = GameTime.get_time()
+        self._init_speed = init_speed
+        self._terminate = None
+        self._actor = actor
+        self._acc = acc
+        self._start = False
+        super(SetSpeedWithAcc, self).__init__(name, actor)
+
+    def initialise(self):
+        """
+        Initialize it's speed
+        """
+        if not self._start:
+            self._start_time = time.time()
+            self._start = True
+
+        current_velocity = self._init_speed + self._acc * (time.time() - self._start_time)
+        if current_velocity < 0:
+            current_velocity = 0
+        transform = self._actor.get_transform()
+        yaw = transform.rotation.yaw * (math.pi / 180)
+
+        vx = math.cos(yaw) * current_velocity
+        vy = math.sin(yaw) * current_velocity
+        self._actor.set_target_velocity(carla.Vector3D(vx, vy, 0))
+        
+    def update(self):
+        """
+        Nothing to update, end the behavior
+        """
+        return py_trees.common.Status.SUCCESS
+
+
+class HandBrakeVehicle(AtomicBehavior):
     """
     This class contains an atomic hand brake behavior.
     To set the hand brake value of the vehicle.
@@ -2168,7 +2356,6 @@ class HandBrakeVehicle(AtomicBehavior):
 
 
 class ActorDestroy(AtomicBehavior):
-
     """
     This class contains an actor destroy behavior.
     Given an actor this behavior will delete it.
@@ -2197,7 +2384,6 @@ class ActorDestroy(AtomicBehavior):
 
 
 class ActorTransformSetter(AtomicBehavior):
-
     """
     This class contains an atomic behavior to set the transform
     of an actor.
@@ -2250,7 +2436,6 @@ class ActorTransformSetter(AtomicBehavior):
 
 
 class TrafficLightStateSetter(AtomicBehavior):
-
     """
     This class contains an atomic behavior to set the state of a given traffic light
 
@@ -2290,7 +2475,6 @@ class TrafficLightStateSetter(AtomicBehavior):
 
 
 class ActorSource(AtomicBehavior):
-
     """
     Implementation for a behavior that will indefinitely create actors
     at a given transform if no other actor exists in a given radius
@@ -2342,13 +2526,12 @@ class ActorSource(AtomicBehavior):
                         np.random.choice(self._actor_types), self._spawn_point)
                     self._actor_limit -= 1
                     self._queue.put(new_actor)
-                except:                             # pylint: disable=bare-except
+                except:  # pylint: disable=bare-except
                     print("ActorSource unable to spawn actor")
         return new_status
 
 
 class ActorSink(AtomicBehavior):
-
     """
     Implementation for a behavior that will indefinitely destroy actors
     that wander near a given location within a specified threshold.
@@ -2376,7 +2559,6 @@ class ActorSink(AtomicBehavior):
 
 
 class StartRecorder(AtomicBehavior):
-
     """
     Atomic that starts the CARLA recorder. Only one can be active
     at a time, and if this isn't the case, the recorder will
@@ -2404,7 +2586,6 @@ class StartRecorder(AtomicBehavior):
 
 
 class StopRecorder(AtomicBehavior):
-
     """
     Atomic that stops the CARLA recorder.
 
@@ -2425,7 +2606,6 @@ class StopRecorder(AtomicBehavior):
 
 
 class TrafficLightManipulator(AtomicBehavior):
-
     """
     Atomic behavior that manipulates traffic lights around the ego_vehicle to trigger scenarios 7 to 10.
     This is done by setting 2 of the traffic light at the intersection to green (with some complex precomputation
@@ -2712,7 +2892,6 @@ class TrafficLightManipulator(AtomicBehavior):
 
 
 class ScenarioTriggerer(AtomicBehavior):
-
     """
     Handles the triggering of the scenarios that are part of a route.
 

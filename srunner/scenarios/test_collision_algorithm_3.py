@@ -19,7 +19,10 @@ from srunner.scenariomanager.scenarioatomics.atomic_behaviors import (ActorTrans
                                                                       ActorDestroy,
                                                                       SyncArrival,
                                                                       KeepVelocity,
-                                                                      StopVehicle)
+                                                                      StopVehicle,
+                                                                      KeepAccelerationWithInitVelocity,
+                                                                      SetSpeedWithAcc,
+                                                                      DecelerateVelocity)
 from srunner.scenariomanager.scenarioatomics.atomic_criteria import CollisionTest
 from srunner.scenariomanager.scenarioatomics.atomic_trigger_conditions import InTriggerRegion
 from srunner.scenarios.basic_scenario import BasicScenario
@@ -40,7 +43,7 @@ class TestCollisionAlgorithm3(BasicScenario):
 
     # other vehicle
     _other_actor_max_brake = 1.0
-    _other_actor_target_velocitys = [15, 15, 15, 15, 15, 15, 15]
+    _other_actor_target_velocitys = [2.4, 2, 1.6, 2, 0.8, 3, 0.4]
 
     def __init__(self, world, ego_vehicles, config, randomize=False, debug_mode=False, criteria_enable=True,
                  timeout=60):
@@ -79,7 +82,7 @@ class TestCollisionAlgorithm3(BasicScenario):
             actor_transform = carla.Transform(
                 carla.Location(actor.transform.location.x,
                                actor.transform.location.y,
-                               actor.transform.location.z - 500),
+                               actor.transform.location.z),
                 actor.transform.rotation)
             vehicle = CarlaDataProvider.request_new_actor(actor.model, actor_transform)
             vehicle.set_simulate_physics(enabled=False)
@@ -112,7 +115,7 @@ class TestCollisionAlgorithm3(BasicScenario):
         # Creating leaf nodes
         start_other_trigger = InTriggerRegion(
             self.ego_vehicles[0],
-            175, 180,
+            165, 167,
             -250, -240)
 
         sync_arrival = SyncArrival(
@@ -125,9 +128,17 @@ class TestCollisionAlgorithm3(BasicScenario):
             120, 140)
 
         for index, actor in enumerate(self.other_actors):
-            keep_velocity = KeepVelocity(
-                actor, self._other_actor_target_velocitys[index])
-            keep_velocity_others.append(keep_velocity)
+            if index == 1:
+                # keep_velocity_with_acc = KeepAccelerationWithInitVelocity(actor, 2, 0.1)
+                keep_velocity_with_acc = SetSpeedWithAcc(actor, 0.1, 2)
+                keep_velocity_others.append(keep_velocity_with_acc)
+            elif index == 3:
+                decelerate_velocity = SetSpeedWithAcc(actor, -0.1, 2)
+                keep_velocity_others.append(decelerate_velocity)
+            else:
+                keep_velocity = KeepVelocity(
+                    actor, self._other_actor_target_velocitys[index])
+                keep_velocity_others.append(keep_velocity)
 
         for index, actor in enumerate(self.other_actors):
             stop_other_trigger = InTriggerRegion(
