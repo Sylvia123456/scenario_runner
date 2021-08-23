@@ -2308,7 +2308,7 @@ class SetSpeedWithAcc(AtomicBehavior):
         vx = math.cos(yaw) * current_velocity
         vy = math.sin(yaw) * current_velocity
         self._actor.set_target_velocity(carla.Vector3D(vx, vy, 0))
-        
+
     def update(self):
         """
         Nothing to update, end the behavior

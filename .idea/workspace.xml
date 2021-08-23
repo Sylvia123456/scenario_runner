@@ -4,6 +4,7 @@
     <list default="true" id="bca9d0c7-41fd-4040-8714-5f57fc634214" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/manual_control.py" beforeDir="false" afterPath="$PROJECT_DIR$/manual_control.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/srunner/datamanager/collision_detect.py" beforeDir="false" afterPath="$PROJECT_DIR$/srunner/datamanager/collision_detect.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/srunner/examples/TestCollisionAlgorithm.xml" beforeDir="false" afterPath="$PROJECT_DIR$/srunner/examples/TestCollisionAlgorithm.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/srunner/scenariomanager/scenarioatomics/atomic_behaviors.py" beforeDir="false" afterPath="$PROJECT_DIR$/srunner/scenariomanager/scenarioatomics/atomic_behaviors.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/srunner/scenarios/test_collision_algorithm_3.py" beforeDir="false" afterPath="$PROJECT_DIR$/srunner/scenarios/test_collision_algorithm_3.py" afterDir="false" />
@@ -169,5 +170,16 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/srunner/datamanager/icw_ver2/ICW.py</url>
+          <line>70</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

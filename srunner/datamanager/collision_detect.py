@@ -1,5 +1,4 @@
-from srunner.datamanager.ICW_VER1.ICW_VER1 import *
-from srunner.datamanager.ICW_VER1.log_format import *
+from srunner.datamanager.icw_ver2.ICW import *
 from srunner.utilities.calculation import *
 import math
 
@@ -8,7 +7,7 @@ class CollisionICWDetector(object):
     def __init__(self):
         self._icw = ICW()
 
-    def detect(self, ego, target, hud, map):
+    def detect(self, ego, target, hud, map, showinfo):
         ego_velocity_vec = ego.get_velocity()
         ego_velocity = math.sqrt(ego_velocity_vec.x ** 2 + ego_velocity_vec.y ** 2)
         ego_acc_vec = ego.get_acceleration()
@@ -30,20 +29,23 @@ class CollisionICWDetector(object):
 
         result = self._icw.run(ego_point, target_point)
 
-        info_text = [
-            '[ego]',
-            'longitude = % .5f' % ego_geo_vec.longitude,
-            'latitude = %.5f' % ego_geo_vec.latitude,
-            'angle = %.2f' % ego_angle,
-            'velocity = %.2f ' % ego_velocity,
-            'acc = %.2f' % ego_acc,
-            '[target]',
-            'longitude = %.5f' % target_geo_vec.longitude,
-            'latitude = %.5f' % target_geo_vec.latitude,
-            'angle = %.2f' % target_angle,
-            'velocity = %.2f ' % target_velocity,
-            'acc = %.2f' % target_acc,
-            '[result]',
-            result
-        ]
-        hud.set_info_text(info_text)
+        if showinfo:
+            info_text = [
+                '[ego]',
+                'longitude = % .5f' % ego_geo_vec.longitude,
+                'latitude = %.5f' % ego_geo_vec.latitude,
+                'angle = %.2f' % ego_angle,
+                'velocity = %.2f ' % ego_velocity,
+                'acc = %.2f' % ego_acc,
+                '[target]',
+                'longitude = %.5f' % target_geo_vec.longitude,
+                'latitude = %.5f' % target_geo_vec.latitude,
+                'angle = %.2f' % target_angle,
+                'velocity = %.2f ' % target_velocity,
+                'acc = %.2f' % target_acc,
+                '[result]',
+                result
+            ]
+            hud.set_info_text(info_text)
+
+        return result

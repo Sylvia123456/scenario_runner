@@ -124,6 +124,7 @@ class WorldSR(World):
         self.player_name = self.player.type_id
         if not self.args.waitstart:
             self.init_ego_velocity()
+        self.ego_speed = self.args.egospeed
 
         # Set up the sensors.
         self.collision_sensor = CollisionSensor(self.player, self.hud)
@@ -147,8 +148,7 @@ class WorldSR(World):
         if len(self.world.get_actors().filter(self.player_name)) < 1:
             return False
         # id is unique
-        self._collision_algor.detect(self.player, self._surroundingcars[0], self.hud, self.map)
-        print("car_1  acc = {}".format(self._surroundingcars[1].get_acceleration()))
+        self._collision_algor.detect(self.player, self._surroundingcars[0], self.hud, self.map, True)
         self.hud.tick(self, clock)
         return True
 
@@ -156,8 +156,13 @@ class WorldSR(World):
         self.camera_manager.render(display)
         self.hud.render(display)
         vehicles = self.world.get_actors().filter('vehicle.*')
-        bounding_boxes = ClientSideBoundingBoxes.get_bounding_boxes(vehicles, self.camera_manager.sensor)
-        ClientSideBoundingBoxes.draw_bounding_boxes(display, bounding_boxes)
+        for v in self._surroundingcars:
+            result = self._collision_algor.detect(self.player, v, self.hud, self.map, False)
+            if eval(result):
+                bounding_box = ClientSideBoundingBoxes.get_bounding_box(v, self.camera_manager.sensor)
+                ClientSideBoundingBoxes.draw_bounding_boxes(display, [bounding_box])
+        # bounding_boxes = ClientSideBoundingBoxes.get_bounding_boxes(vehicles, self.camera_manager.sensor)
+        # ClientSideBoundingBoxes.draw_bounding_boxes(display, bounding_boxes)
 
     def init_ego_velocity(self):
         forward_vec = self.player.get_transform().get_forward_vector()
@@ -259,8 +264,11 @@ def main():
         '--waitstart',
         default=False,
         type=bool,
-        help='should wait start to activate scenario'
-    )
+        help='should wait start to activate scenario')
+    argparser.add_argument(
+        '--egospeed',
+        default=5,
+        help='ego speed, defalut is 5m/s')
     args = argparser.parse_args()
 
     args.rolename = 'hero'  # Needed for CARLA version

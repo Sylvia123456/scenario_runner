@@ -46,7 +46,7 @@ class TestCollisionAlgorithm3(BasicScenario):
     _other_actor_target_velocitys = [2.4, 2, 1.6, 2, 0.8, 3, 0.4]
 
     def __init__(self, world, ego_vehicles, config, randomize=False, debug_mode=False, criteria_enable=True,
-                 timeout=60):
+                 timeout=600):
         """
         Setup all relevant parameters and create scenario
         """
