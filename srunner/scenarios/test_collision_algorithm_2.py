@@ -43,7 +43,7 @@ class TestCollisionAlgorithm2(BasicScenario):
     _other_actor_target_velocity = 15
 
     def __init__(self, world, ego_vehicles, config, randomize=False, debug_mode=False, criteria_enable=True,
-                 timeout=60):
+                 timeout=600):
         """
         Setup all relevant parameters and create scenario
         """
@@ -93,7 +93,7 @@ class TestCollisionAlgorithm2(BasicScenario):
 
         sync_arrival = SyncArrival(
             self.other_actors[0], self.ego_vehicles[0],
-            carla.Location(x=0, y=129))
+            carla.Location(x=50, y=129))
 
         pass_through_trigger = InTriggerRegion(
             self.ego_vehicles[0],
@@ -106,7 +106,7 @@ class TestCollisionAlgorithm2(BasicScenario):
 
         stop_other_trigger = InTriggerRegion(
             self.other_actors[0],
-            17, 27,
+            50, 60,
             120, 135)
 
         stop_other = StopVehicle(

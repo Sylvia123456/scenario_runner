@@ -4,22 +4,22 @@
         <ego_vehicle x="-74.32" y="-50" z="0.5" yaw="270" model="vehicle.lincoln.mkz2017" />
         <other_actor x="-105" y="-136" z="0.5" yaw="0" model="vehicle.tesla.model3" />
     </scenario>
-    <scenario name="TestCollisionAlgorithm_2" type="TestCollisionAlgorithm2" town="Town04">
+    <scenario name="TestCollisionAlgorithm_4" type="TestCollisionAlgorithm4" town="Town04">
         <ego_vehicle x="255" y="-313" z="0.5" yaw="90" model="vehicle.lincoln.mkz2017" />
-        <other_actor x="255" y="-175" z="0.5" yaw="-90" model="vehicle.tesla.model3" />
+        <other_actor x="255" y="-175" z="0.5" yaw="270" model="vehicle.tesla.model3" />
+    </scenario>
+    <scenario name="TestCollisionAlgorithm_2" type="TestCollisionAlgorithm2" town="Town03">
+        <ego_vehicle x="130" y="127" z="0.5" yaw="180" model="vehicle.lincoln.mkz2017" />
+        <other_actor x="-110" y="129" z="0.5" yaw="0" model="vehicle.tesla.model3" />
     </scenario>
     <scenario name="TestCollisionAlgorithm_3" type="TestCollisionAlgorithm3" town="Town04">
         <ego_vehicle x="165" y="-245" z="0.5" yaw="0" model="vehicle.lincoln.mkz2017" />
         <other_actor x="237" y="-249.5" z="0.5" yaw="180" model="vehicle.tesla.model3" />
         <other_actor x="255" y="-310" z="0.5" yaw="90" model="vehicle.tesla.model3" />
-        <other_actor x="259" y="-261" z="0.5" yaw="-90" model="vehicle.tesla.model3" />
+        <other_actor x="259" y="-261" z="0.5" yaw="270" model="vehicle.tesla.model3" />
         <other_actor x="348" y="-250" z="0.5" yaw="180" model="vehicle.tesla.model3" />
         <other_actor x="268" y="-246" z="0.5" yaw="0" model="vehicle.tesla.model3" />
-        <other_actor x="258.5" y="-172" z="0.5" yaw="-90" model="vehicle.tesla.model3" />
+        <other_actor x="258.5" y="-172" z="0.5" yaw="270" model="vehicle.tesla.model3" />
         <other_actor x="255" y="-219" z="0.5" yaw="90" model="vehicle.tesla.model3" />
-    </scenario>
-    <scenario name="TestCollisionAlgorithm_4" type="TestCollisionAlgorithm2" town="Town03">
-        <ego_vehicle x="130" y="129" z="0.5" yaw="180" model="vehicle.lincoln.mkz2017" />
-        <other_actor x="-110" y="129" z="0.5" yaw="0" model="vehicle.tesla.model3" />
     </scenario>
 </scenarios>
