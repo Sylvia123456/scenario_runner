@@ -52,17 +52,24 @@ from __future__ import print_function
 # -- imports -------------------------------------------------------------------
 # ==============================================================================
 
-
 import carla
 
 from examples.manual_control import (World, HUD, KeyboardControl, CameraManager,
                                      CollisionSensor, LaneInvasionSensor, GnssSensor, IMUSensor)
-
+from client_bounding_boxes import ClientSideBoundingBoxes
+from srunner.datamanager.collision_detect import *
 import os
 import argparse
 import logging
 import time
-import pygame
+import numpy as np
+
+try:
+    import pygame
+    from pygame.locals import K_y
+except ImportError:
+    raise RuntimeError('cannot import pygame, make sure pygame package is installed')
+
 
 # ==============================================================================
 # -- Global functions ----------------------------------------------------------
@@ -79,8 +86,14 @@ def get_actor_display_name(actor, truncate=250):
 # ==============================================================================
 
 class WorldSR(World):
-
     restarted = False
+    # 单位 m/s
+    ego_speed = 4
+
+    def __init__(self, carla_world, hud, args):
+        self.args = args
+        super(WorldSR, self).__init__(carla_world, hud, args)
+        self._collision_algor = CollisionICWDetector()
 
     def restart(self):
 
@@ -95,6 +108,7 @@ class WorldSR(World):
         cam_index = self.camera_manager.index if self.camera_manager is not None else 0
         cam_pos_index = self.camera_manager.transform_index if self.camera_manager is not None else 0
 
+        self._surroundingcars = []
         # Get the ego vehicle
         while self.player is None:
             print("Waiting for the ego vehicle...")
@@ -104,9 +118,13 @@ class WorldSR(World):
                 if vehicle.attributes['role_name'] == "hero":
                     print("Ego vehicle found")
                     self.player = vehicle
-                    break
-        
+                else:
+                    self._surroundingcars.append(vehicle)
+
         self.player_name = self.player.type_id
+        if not self.args.waitstart:
+            self.init_ego_velocity()
+        self.ego_speed = self.args.egospeed
 
         # Set up the sensors.
         self.collision_sensor = CollisionSensor(self.player, self.hud)
@@ -116,15 +134,56 @@ class WorldSR(World):
         self.camera_manager = CameraManager(self.player, self.hud, self._gamma)
         self.camera_manager.transform_index = cam_pos_index
         self.camera_manager.set_sensor(cam_index, notify=False)
+
+        calibration = np.identity(3)
+        calibration[0, 2] = self.args.width / 2.0
+        calibration[1, 2] = self.args.height / 2.0
+        calibration[0, 0] = calibration[1, 1] = self.args.width / (2.0 * np.tan(90 * np.pi / 360.0))
+        self.camera_manager.sensor.calibration = calibration
+
         actor_type = get_actor_display_name(self.player)
         self.hud.notification(actor_type)
 
     def tick(self, clock):
         if len(self.world.get_actors().filter(self.player_name)) < 1:
             return False
-
+        # id is unique
+        # self._collision_algor.detect(self.player, self._surroundingcars[0], self.hud, self.map, True)
         self.hud.tick(self, clock)
         return True
+
+    def render(self, display):
+        self.camera_manager.render(display)
+        self.hud.render(display)
+        vehicles = self.world.get_actors().filter('vehicle.*')
+        for v in self._surroundingcars:
+            result = self._collision_algor.detect(self.player, v, self.hud, self.map, False)
+            if eval(result):
+                bounding_box = ClientSideBoundingBoxes.get_bounding_box(v, self.camera_manager.sensor)
+                ClientSideBoundingBoxes.draw_bounding_boxes(display, [bounding_box])
+        # bounding_boxes = ClientSideBoundingBoxes.get_bounding_boxes(vehicles, self.camera_manager.sensor)
+        # ClientSideBoundingBoxes.draw_bounding_boxes(display, bounding_boxes)
+
+    def init_ego_velocity(self):
+        forward_vec = self.player.get_transform().get_forward_vector()
+        velocity_vec = self.ego_speed * forward_vec
+        self.player.set_target_velocity(velocity_vec)
+        print("ego_velocity = {}".format(velocity_vec))
+        # self.player.enable_constant_velocity(carla.Vector3D(16, 0, 0))
+
+
+class KeyboardControlSR(KeyboardControl):
+
+    def __init__(self, world, start_in_autopilot):
+        super(KeyboardControlSR, self).__init__(world, start_in_autopilot)
+
+    def parse_events(self, client, world, clock):
+        for event in pygame.event.get():
+            if event.type == pygame.KEYUP:
+                if event.key == K_y:
+                    world.init_ego_velocity()
+        super(KeyboardControlSR, self).parse_events(client, world, clock)
+
 
 # ==============================================================================
 # -- game_loop() ---------------------------------------------------------------
@@ -145,7 +204,7 @@ def game_loop(args):
 
         hud = HUD(args.width, args.height)
         world = WorldSR(client.get_world(), hud, args)
-        controller = KeyboardControl(world, args.autopilot)
+        controller = KeyboardControlSR(world, args.autopilot)
 
         clock = pygame.time.Clock()
         while True:
@@ -201,11 +260,20 @@ def main():
         metavar='WIDTHxHEIGHT',
         default='1280x720',
         help='window resolution (default: 1280x720)')
+    argparser.add_argument(
+        '--waitstart',
+        default=False,
+        type=bool,
+        help='should wait start to activate scenario')
+    argparser.add_argument(
+        '--egospeed',
+        default=5,
+        help='ego speed, defalut is 5m/s')
     args = argparser.parse_args()
 
-    args.rolename = 'hero'      # Needed for CARLA version
-    args.filter = "vehicle.*"   # Needed for CARLA version
-    args.gamma = 2.2   # Needed for CARLA version
+    args.rolename = 'hero'  # Needed for CARLA version
+    args.filter = "vehicle.*"  # Needed for CARLA version
+    args.gamma = 2.2  # Needed for CARLA version
     args.width, args.height = [int(x) for x in args.res.split('x')]
 
     log_level = logging.DEBUG if args.debug else logging.INFO
@@ -216,7 +284,6 @@ def main():
     print(__doc__)
 
     try:
-
         game_loop(args)
 
     except KeyboardInterrupt:
@@ -226,5 +293,4 @@ def main():
 
 
 if __name__ == '__main__':
-
     main()

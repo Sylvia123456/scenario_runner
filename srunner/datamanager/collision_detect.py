@@ -1,4 +1,4 @@
-from srunner.datamanager.icw_ver3.ICW import *
+from srunner.datamanager.icw_ver5.ICW import *
 from srunner.utilities.calculation import *
 import math
 
@@ -52,9 +52,9 @@ class CollisionICWDetector(object):
                 result
             ]
             hud.set_info_text(info_text)
-            logger.info("ego car : [longitude] = %f, [latitude] = %f, [angle] = %f" % (
-                ego_geo_vec.longitude, ego_geo_vec.latitude, ego_angle))
-            logger.info("target car : [longitude] = %f, [latitude] = %f, [angle] = %f" % (
-                target_geo_vec.longitude, target_geo_vec.latitude, target_angle))
+        logger.info("ego car : [longitude] = %f, [latitude] = %f, [angle] = %f, [velocity] = %f" % (
+            ego_geo_vec.longitude, ego_geo_vec.latitude, ego_angle, ego_velocity))
+        logger.info("target car : [longitude] = %f, [latitude] = %f, [angle] = %f, [velocity] = %f" % (
+            target_geo_vec.longitude, target_geo_vec.latitude, target_angle, target_velocity))
 
         return result
