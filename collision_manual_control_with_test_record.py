@@ -58,6 +58,7 @@ from examples.manual_control import (World, HUD, KeyboardControl, CameraManager,
                                      CollisionSensor, LaneInvasionSensor, GnssSensor, IMUSensor)
 from client_bounding_boxes import ClientSideBoundingBoxes
 from srunner.datamanager.collision_detect import *
+from srunner.datamanager.log_test_result import logger as TestReportLogger
 import argparse
 import logging
 import time
@@ -119,6 +120,12 @@ class WorldSR(World):
                     self.player = vehicle
                 else:
                     self._surroundingcars.append(vehicle)
+                    TestReportLogger.info("[%s %s start Position] x= %s, y=%s, z=%s, yaw=%s" % (vehicle.attributes['role_name'],
+                                                                                                vehicle.id,
+                                                                                                vehicle.get_transform().location.x,
+                                                                                                vehicle.get_transform().location.y,
+                                                                                                vehicle.get_transform().location.z,
+                                                                                                vehicle.get_transform().rotation.yaw))
 
         self.player_name = self.player.type_id
         if not self.args.waitstart:
@@ -158,9 +165,10 @@ class WorldSR(World):
         for index in range(len(self._surroundingcars)):
             v = self._surroundingcars[index]
             result = self._collision_algor.detect(self.player, v, self.hud, self.map, False, index)
-            if result:
+            if result == "True":
                 bounding_box = ClientSideBoundingBoxes.get_bounding_box(v, self.camera_manager.sensor)
                 ClientSideBoundingBoxes.draw_bounding_boxes(display, [bounding_box])
+                TestReportLogger.info("%s %s collision test is TRUE" % (v.attributes['role_name'], v.id))
         # bounding_boxes = ClientSideBoundingBoxes.get_bounding_boxes(vehicles, self.camera_manager.sensor)
         # ClientSideBoundingBoxes.draw_bounding_boxes(display, bounding_boxes)
 
@@ -261,9 +269,8 @@ def main():
         default='1280x720',
         help='window resolution (default: 1280x720)')
     argparser.add_argument(
-        '--waitstart',
-        default=False,
-        type=bool,
+        '-w', '--waitstart',
+        action='store_true',
         help='should wait start to activate scenario')
     argparser.add_argument(
         '--egospeed',

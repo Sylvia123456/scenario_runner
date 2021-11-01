@@ -7,7 +7,7 @@ class CollisionICWDetector(object):
     def __init__(self):
         self._icw = ICW()
 
-    def detect(self, ego, target, hud, map, showinfo):
+    def detect(self, ego, target, hud, map, showinfo, index):
         ego_velocity_vec = ego.get_velocity()
         ego_velocity = math.sqrt(ego_velocity_vec.x ** 2 + ego_velocity_vec.y ** 2)
         ego_acc_vec = ego.get_acceleration()
@@ -54,7 +54,7 @@ class CollisionICWDetector(object):
             hud.set_info_text(info_text)
         logger.info("ego car : [longitude] = %f, [latitude] = %f, [angle] = %f, [velocity] = %f" % (
             ego_geo_vec.longitude, ego_geo_vec.latitude, ego_angle, ego_velocity))
-        logger.info("target car : [longitude] = %f, [latitude] = %f, [angle] = %f, [velocity] = %f" % (
-            target_geo_vec.longitude, target_geo_vec.latitude, target_angle, target_velocity))
+        logger.info("target car %d : [longitude] = %f, [latitude] = %f, [angle] = %f, [velocity] = %f" % (
+            index, target_geo_vec.longitude, target_geo_vec.latitude, target_angle, target_velocity))
 
         return result
